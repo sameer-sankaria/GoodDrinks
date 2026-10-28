@@ -956,7 +956,7 @@
 
       @media (max-width: 760px) {
         #opening {
-          --op-cy: .56;
+          --op-cy: .49;
           --op-d: min(64vw, 34svh);
           --op-pint: calc(var(--op-d) * .52);
           --op-sat: min(15vw, 8svh);
@@ -967,6 +967,7 @@
         }
 
         #opening .op__screen--1 {
+          min-height: clamp(640px, 86svh, 100svh);
           padding-top: 92px;
           padding-bottom: 28px;
         }
