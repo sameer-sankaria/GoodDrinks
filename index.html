@@ -923,10 +923,11 @@
 
       #opening .op__screen--2 {
         display: grid;
+        min-height: 0;
         align-content: center;
         justify-items: center;
         gap: 40px;
-        padding: 120px var(--space-1);
+        padding: clamp(56px, 9svh, 96px) var(--space-1);
         background: var(--color-4);
         color: var(--color-1);
         text-align: center;
@@ -997,7 +998,7 @@
         }
 
         #opening .op__screen--2 {
-          padding: 96px var(--space-1);
+          padding: clamp(56px, 9svh, 72px) var(--space-1);
           gap: 28px;
         }
 
@@ -1101,7 +1102,7 @@
     @layer sections {
       #no-shortcuts {
         position: relative;
-        padding: var(--space-2) var(--space-1);
+        padding: var(--space-2) var(--space-1) clamp(40px, 5vw, 72px);
         overflow: clip;
       }
 
@@ -2479,8 +2480,16 @@
       .shop-section {
         max-width: 1280px;
         margin: 0 auto;
-        padding: var(--space-2) var(--space-1);
+        padding: clamp(40px, 5vw, 72px) var(--space-1);
         scroll-margin-top: 80px;
+      }
+
+      #drinks {
+        padding-block: clamp(40px, 5vw, 72px);
+      }
+
+      #on-tap {
+        padding-top: clamp(40px, 5vw, 72px);
       }
 
       .shop-intro {
@@ -5364,7 +5373,7 @@
         const timeline = gsap.timeline({ scrollTrigger: { id: 'tags-swing', trigger: section.querySelector('.ns__list'), start: 'top 88%', end: 'bottom 60%', scrub: .7 } });
         cards.forEach((card, i) => {
           const rest = parseFloat(getComputedStyle(card).rotate) || 0;
-          timeline.fromTo(card, { rotation: rest + (i % 2 ? swing : -swing), y: -70 - i * 36 }, { rotation: rest, y: 0, duration: 1, ease: 'back.out(2.4)' }, i * .42);
+          timeline.fromTo(card, { rotation: rest + (i % 2 ? swing : -swing), y: 24 + i * 8 }, { rotation: rest, y: 0, duration: 1, ease: 'back.out(2.4)' }, i * .42);
         });
         const drift = gsap.timeline({ scrollTrigger: { id: 'tags-swing:floats', trigger: section, start: 'top bottom', end: 'top 15%', scrub: .4 } });
         floats.forEach(float => {
