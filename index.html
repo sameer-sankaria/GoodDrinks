@@ -12,16 +12,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Good Drinks — A drinks collection</title>
   <meta name="description"
-    content="Explore an editorial collection of beer, spirits, wine, cocktails and alcohol-free drinks. Illustrative examples, not a live inventory.">
+    content="Good Drinks is an editorial guide to beer, spirits, wine, cocktails and alcohol-free drinks. Product names and prices are demo examples.">
   <meta name="generator" content="8B Templates">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Good Drinks — A drinks collection">
   <meta property="og:description"
-    content="Explore an editorial collection of beer, spirits, wine, cocktails and alcohol-free drinks. Illustrative examples, not a live inventory.">
+    content="Good Drinks is an editorial guide to beer, spirits, wine, cocktails and alcohol-free drinks. Product names and prices are demo examples.">
   <meta name="twitter:card" content="summary">
   <link rel="icon"
-    href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2064%2064'%3E%3Crect%20width%3D'64'%20height%3D'64'%20rx%3D'14'%20fill%3D'%23120c07'%2F%3E%3Ctext%20x%3D'32'%20y%3D'45'%20font-family%3D'Arial%2CHelvetica%2Csans-serif'%20font-size%3D'38'%20font-weight%3D'700'%20text-anchor%3D'middle'%20fill%3D'%23e3a43c'%3EL%3C%2Ftext%3E%3C%2Fsvg%3E"
-    data-8b-placeholder="favicon">
+    href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2064%2064'%3E%3Crect%20width%3D'64'%20height%3D'64'%20rx%3D'14'%20fill%3D'%23120c07'%2F%3E%3Ctext%20x%3D'32'%20y%3D'45'%20font-family%3D'Arial%2CHelvetica%2Csans-serif'%20font-size%3D'38'%20font-weight%3D'700'%20text-anchor%3D'middle'%20fill%3D'%23e3a43c'%3EG%3C%2Ftext%3E%3C%2Fsvg%3E">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload"
     href="https://fonts.gstatic.com/s/bricolagegrotesque/v9/3y9U6as8bTXq_nANBjzKo3IeZx8z6up5BeSl5jBNz_19PpZJMnuECpwUxJBOm_OJBCaaD30YfKfjZZoLvZvl-Molsg.woff2"
@@ -927,6 +926,7 @@
 
       #opening .op__screen--2 {
         display: grid;
+        z-index: 2;
         min-height: 0;
         align-content: center;
         justify-items: center;
@@ -3338,9 +3338,108 @@
       }
     }
   </style>
+  <style data-8b-part="launch-polish">
+    .age-notice {
+      position: fixed;
+      right: max(16px, env(safe-area-inset-right));
+      bottom: max(16px, env(safe-area-inset-bottom));
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: min(520px, calc(100vw - 32px));
+      padding: 14px 16px;
+      border: 1px solid var(--color-2);
+      border-radius: var(--radius-1);
+      background: var(--color-2);
+      color: var(--color-1);
+      box-shadow: 0 8px 30px rgb(0 0 0 / 28%);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .age-notice p {
+      flex: 1;
+    }
+
+    .age-notice button {
+      flex: none;
+      min-height: 40px;
+      padding: 8px 12px;
+      border: 1px solid var(--color-1);
+      border-radius: var(--radius-2);
+      background: var(--color-1);
+      color: var(--color-2);
+      font: 700 13px/1 var(--font-2);
+      cursor: pointer;
+    }
+
+    .age-notice button:hover,
+    .age-notice button:focus-visible {
+      background: var(--color-4);
+      color: var(--color-1);
+    }
+
+    #nav .nav__links {
+      gap: clamp(8px, 1vw, 16px);
+    }
+
+    #nav .nav__links .m-link {
+      font-size: clamp(14px, 1.05vw, 16px);
+    }
+
+    .drink-card:focus-within,
+    .shop-card:focus-within,
+    .tap__card:focus-within {
+      outline: 2px solid var(--color-4);
+      outline-offset: 4px;
+    }
+
+    .cart-control:not(:disabled):hover,
+    .cart-close:hover,
+    .shop-detail__close:hover {
+      border-color: var(--color-4);
+      background: var(--color-4);
+      color: var(--color-1);
+    }
+
+    @media (max-width: 600px) {
+      .age-notice {
+        right: 12px;
+        bottom: max(12px, env(safe-area-inset-bottom));
+        width: calc(100vw - 24px);
+        gap: 10px;
+        padding: 12px;
+        font-size: 13px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <aside class="age-notice" aria-label="Responsible drinking notice">
+    <p>Please enjoy responsibly. For adults of legal drinking age.</p>
+    <button type="button" aria-label="Dismiss responsible drinking notice">Dismiss</button>
+  </aside>
+  <script>
+    (() => {
+      const notice = document.querySelector('.age-notice');
+      const storageKey = 'good-drinks:responsible-drinking-notice-dismissed';
+      try {
+        if (window.localStorage.getItem(storageKey) === 'true') notice.hidden = true;
+      } catch {
+        // Dismissal still works for the current page when storage is unavailable.
+      }
+      notice.querySelector('button').addEventListener('click', () => {
+        notice.hidden = true;
+        try {
+          window.localStorage.setItem(storageKey, 'true');
+        } catch {
+          // Keep the dismissed state for this page view.
+        }
+      });
+    })();
+  </script>
   <!-- navigation: original fixed bar and accessible mobile overlay -->
   <header id="nav" data-8b-section="navigation">
     <a class="nav__brand" href="#opening" aria-label="Good Drinks, back to the top">
@@ -3352,11 +3451,6 @@
         <li><a class="m-link" href="#opening">Home</a></li>
         <li><a class="m-link" href="#drinks">Drinks</a></li>
         <li><a class="m-link" href="#shop">Shop</a></li>
-        <li><a class="m-link" href="#beer">Beer</a></li>
-        <li><a class="m-link" href="#spirits">Spirits</a></li>
-        <li><a class="m-link" href="#wine">Wine</a></li>
-        <li><a class="m-link" href="#cocktails">Cocktails</a></li>
-        <li><a class="m-link" href="#mocktails">Mocktails</a></li>
         <li><a class="m-link" href="#about">About</a></li>
         <li><a class="m-link" href="#visit">Contact</a></li>
       </ul>
@@ -3406,8 +3500,8 @@
       <ul class="cart-items" id="cart-items" aria-label="Cart items"></ul>
       <div class="cart-summary">
         <div class="cart-summary__row"><span>Example subtotal</span><span id="cart-subtotal">—</span></div>
-        <p class="cart-notice">Demo USD prices only; they are not verified offers. Sizes and variants have not been
-          supplied. This cart does not place orders or process payments.</p>
+        <p class="cart-notice">Products and prices are demo examples, not offers. This cart does not place orders or
+          process payments.</p>
       </div>
     </aside>
   </div>
@@ -3455,8 +3549,8 @@
         </div>
       </div>
       <div class="op__screen op__screen--2">
-        <p class="op__manifesto m-text-6">A crisp pour, a slow sip, a bright little pause. Explore a broad mix of
-          drinks, with room for your own discoveries along the way <span class="op__chip"><img
+        <p class="op__manifesto m-text-6">A crisp pour, a slow sip, a bright little pause. Explore a considered mix of
+          drinks, with room for your own discoveries <span class="op__chip"><img
               src="https://images.unsplash.com/photo-1516594798947-e65505dbb29d?auto=format&fit=crop&w=180&q=75" alt=""
               loading="lazy" width="600" height="900"></span>— from the familiar to the alcohol-free <span
             class="op__chip"><img
@@ -3517,9 +3611,8 @@
     <section class="drink-section" id="drinks" aria-labelledby="drinks-title">
       <div class="drink-section__head">
         <h2 class="m-text-2" id="drinks-title">The drinks edit</h2>
-        <p class="m-text">An editorial guide to familiar styles and classic serves. Every item is a demo concept—not
-          verified inventory or current availability. No real brands or sizes are supplied; shop prices are clearly
-          marked examples, not offers.</p>
+        <p class="m-text">Explore beer, spirits, wine, cocktails, and a separate alcohol-free shop. Product names and
+          prices are demo examples, not a live menu or offers.</p>
       </div>
       <nav class="category-jumps" aria-label="Drink categories">
         <a href="#shop">Shop alcohol-free drinks</a><a href="#beer">Beer</a><a href="#spirits">Spirits</a><a
@@ -3533,9 +3626,8 @@
       <header class="shop-intro">
         <span class="drink-badge">Alcohol-free collection</span>
         <h2 class="m-text-2" id="shop-title">Shop the drinks</h2>
-        <p class="m-text">Browse the alcohol-free collection by flavour or category. These are illustrative demo
-          products; the example USD prices are not verified offers, and size or variant details have not been supplied.
-        </p>
+        <p class="m-text">Browse the separate alcohol-free collection by flavour or category. Products and prices are
+          demo examples; confirm details before publishing.</p>
       </header>
       <nav class="shop-category-nav" aria-label="Filter shop products by category">
         <button type="button" data-shop-category="all" aria-pressed="true">All products</button>
@@ -3583,15 +3675,15 @@
 
     <dialog class="shop-detail" id="shop-detail" aria-labelledby="shop-detail-title">
       <div class="shop-detail__layout">
-        <img class="shop-detail__image" id="shop-detail-image" alt="">
+        <img class="shop-detail__image" id="shop-detail-image" width="800" height="600" alt="">
         <div class="shop-detail__content">
           <button class="shop-detail__close" type="button" aria-label="Close product details">×</button>
-          <span class="drink-badge">Demo product</span>
+          <span class="drink-badge">Alcohol-free</span>
           <p class="shop-detail__category" id="shop-detail-category"></p>
           <h2 class="m-text-3" id="shop-detail-title"></h2>
           <p class="m-text" id="shop-detail-description"></p>
           <p class="shop-detail__price" id="shop-detail-price"></p>
-          <p class="shop-detail__variant">Size and variants have not been supplied for this demo catalogue.</p>
+          <p class="shop-detail__variant">Product size and variants have not been supplied.</p>
           <label class="shop-detail__quantity" for="shop-detail-quantity">Quantity
             <input class="m-field" id="shop-detail-quantity" type="number" min="1" max="99" step="1" value="1"
               inputmode="numeric">
@@ -3610,7 +3702,7 @@
         <li class="tap__card tap__card--1">
           <div class="tap__fill" aria-hidden="true"></div>
           <h3 class="m-text-4 tap__name">Golden lager</h3>
-          <p class="m-text-5 tap__style">Beer · illustrative style</p>
+          <p class="m-text-5 tap__style">Beer style</p>
           <img class="tap__photo"
             src="https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=700&q=80"
             width="800" height="600" alt="A golden beer in clear glassware" loading="lazy">
@@ -3620,7 +3712,7 @@
         <li class="tap__card tap__card--2">
           <div class="tap__fill" aria-hidden="true"></div>
           <h3 class="m-text-4 tap__name">Amber pour</h3>
-          <p class="m-text-5 tap__style">Whisky · illustrative style</p>
+          <p class="m-text-5 tap__style">Whisky style</p>
           <img class="tap__photo"
             src="https://images.unsplash.com/photo-1527281400683-1aae777175f8?auto=format&fit=crop&w=700&q=80"
             width="800" height="600" alt="Amber spirit served in a short glass" loading="lazy">
@@ -3630,7 +3722,7 @@
         <li class="tap__card tap__card--3">
           <div class="tap__fill" aria-hidden="true"></div>
           <h3 class="m-text-4 tap__name">Red wine</h3>
-          <p class="m-text-5 tap__style">Wine · illustrative style</p>
+          <p class="m-text-5 tap__style">Wine style</p>
           <img class="tap__photo"
             src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=700&q=80"
             width="800" height="600" alt="Red wine poured into a stemmed glass" loading="lazy">
@@ -3640,7 +3732,7 @@
         <li class="tap__card tap__card--4">
           <div class="tap__fill" aria-hidden="true"></div>
           <h3 class="m-text-4 tap__name">Citrus cocktail</h3>
-          <p class="m-text-5 tap__style">Cocktail · illustrative serve</p>
+          <p class="m-text-5 tap__style">Cocktail</p>
           <img class="tap__photo"
             src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=700&q=80"
             width="800" height="600" alt="A citrus-garnished cocktail in a stemmed glass" loading="lazy">
@@ -3650,7 +3742,7 @@
         <li class="tap__card tap__card--5">
           <div class="tap__fill" aria-hidden="true"></div>
           <h3 class="m-text-4 tap__name">Berry spritz</h3>
-          <p class="m-text-5 tap__style">Alcohol-free · illustrative serve</p>
+          <p class="m-text-5 tap__style">Alcohol-free</p>
           <img class="tap__photo"
             src="https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=700&q=80" width="800"
             height="600" alt="A colourful chilled drink with citrus and ice" loading="lazy">
@@ -3663,11 +3755,8 @@
     <section class="drink-section" id="beer" aria-labelledby="beer-title">
       <div class="drink-section__head">
         <h2 class="m-text-2" id="beer-title">Beer</h2>
-        <p class="m-text">A broad field of malt, grain, roast and hops. These are familiar style examples, not named
-          products or a live list.</p>
+        <p class="m-text">Explore classic families, from crisp lager to roast-led stout.</p>
       </div>
-      <p class="drink-note m-text">Illustrative styles only · no brand, price, ABV, origin or availability is implied.
-      </p>
       <div class="drink-section__grid">
         <article class="drink-card">
           <img class="drink-card__image"
@@ -3697,7 +3786,7 @@
           </div>
         </article>
       </div>
-      <ul class="drink-list" aria-label="More illustrative beer styles">
+      <ul class="drink-list" aria-label="More beer styles">
         <li class="drink-list__item">
           <h3 class="m-text-4">Wheat beer</h3><span class="drink-badge">Beer style</span>
           <p class="m-text">A soft, grain-led family of beers.</p>
@@ -3720,11 +3809,8 @@
     <section class="drink-section" id="spirits" aria-labelledby="spirits-title">
       <div class="drink-section__head">
         <h2 class="m-text-2" id="spirits-title">Spirits</h2>
-        <p class="m-text">A varied collection of distilled drink families. Terms describe categories only; no origin,
-          producer, age statement or availability is represented.</p>
+        <p class="m-text">Explore whisky, gin, rum, and other familiar spirit styles.</p>
       </div>
-      <p class="drink-note m-text">Illustrative categories only · check producer and origin details for any real bottle.
-      </p>
       <div class="drink-section__grid">
         <article class="drink-card"><img class="drink-card__image"
             src="https://images.unsplash.com/photo-1527281400683-1aae777175f8?auto=format&fit=crop&w=800&q=80"
@@ -3751,7 +3837,7 @@
           </div>
         </article>
       </div>
-      <ul class="drink-list" aria-label="More illustrative spirit categories">
+      <ul class="drink-list" aria-label="More spirit categories">
         <li class="drink-list__item">
           <h3 class="m-text-4">Scotch</h3><span class="drink-badge">Spirit category</span>
           <p class="m-text">A whisky category; check verified producer and origin details.</p>
@@ -3770,11 +3856,8 @@
     <section class="drink-section" id="wine" aria-labelledby="wine-title">
       <div class="drink-section__head">
         <h2 class="m-text-2" id="wine-title">Wine</h2>
-        <p class="m-text">A concise guide to four familiar wine families. The tasting notes below are general style
-          descriptions, not claims about a bottle or vintage.</p>
+        <p class="m-text">Explore red, white, rosé, and sparkling wine styles.</p>
       </div>
-      <p class="drink-note m-text">Illustrative wine styles only · specific grapes, vintages, producers and origins are
-        intentionally omitted.</p>
       <div class="drink-section__grid">
         <article class="drink-card"><img class="drink-card__image"
             src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=800&q=80"
@@ -3806,10 +3889,8 @@
     <section class="drink-section" id="cocktails" aria-labelledby="cocktails-title">
       <div class="drink-section__head">
         <h2 class="m-text-2" id="cocktails-title">Cocktails</h2>
-        <p class="m-text">A tour of familiar cocktail names. Recipes vary by bartender and source; no fixed ingredients,
-          measures or strength are supplied here.</p>
+        <p class="m-text">Explore familiar serves, from aperitif classics to citrus-forward cocktails.</p>
       </div>
-      <p class="drink-note m-text">Illustrative classic serves · recipes, ingredients and alcohol content vary.</p>
       <div class="drink-section__grid">
         <article class="drink-card"><img class="drink-card__image"
             src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80"
@@ -3836,7 +3917,7 @@
           </div>
         </article>
       </div>
-      <ul class="drink-list" aria-label="More illustrative cocktail examples">
+      <ul class="drink-list" aria-label="More cocktail ideas">
         <li class="drink-list__item">
           <h3 class="m-text-4">Cosmopolitan</h3><span class="drink-badge">Cocktail</span>
           <p class="m-text">A familiar cocktail name; recipes can vary.</p>
@@ -4144,17 +4225,17 @@
         <h2 class="fl__title" id="fl-title" data-8b-motion="rise"><span class="m-text-2">Build a tasting</span> <span
             class="m-text-3">shortlist.</span></h2>
         <p class="m-text fl__lede">Choose up to four styles to compare, then remove or replace choices in the circles.
-          This local demo does not place an order or represent availability.</p>
+          This shortlist does not place an order.</p>
         <ul class="fl__chips">
           <li><button class="fl__chip" type="button" style="--fl-c: var(--color-5)"><span class="fl__swatch"
                 aria-hidden="true"></span><span class="m-text-4 fl__name">Lager</span><span
-                class="m-text-5 fl__meta">Beer style · illustrative</span></button></li>
+                class="m-text-5 fl__meta">Beer style</span></button></li>
           <li><button class="fl__chip" type="button" style="--fl-c: var(--color-4)"><span class="fl__swatch"
                 aria-hidden="true"></span><span class="m-text-4 fl__name">Whisky</span><span
-                class="m-text-5 fl__meta">Spirit category · illustrative</span></button></li>
+                class="m-text-5 fl__meta">Spirit category</span></button></li>
           <li><button class="fl__chip" type="button" style="--fl-c: var(--color-6)"><span class="fl__swatch"
                 aria-hidden="true"></span><span class="m-text-4 fl__name">Red wine</span><span
-                class="m-text-5 fl__meta">Wine style · illustrative</span></button></li>
+                class="m-text-5 fl__meta">Wine style</span></button></li>
           <li><button class="fl__chip" type="button" style="--fl-c: var(--color-7)"><span class="fl__swatch"
                 aria-hidden="true"></span><span class="m-text-4 fl__name">Margarita</span><span
                 class="m-text-5 fl__meta">Cocktail example</span></button></li>
@@ -4163,7 +4244,7 @@
                 class="m-text-5 fl__meta">Alcohol-free example</span></button></li>
           <li><button class="fl__chip" type="button" style="--fl-c: var(--color-2)"><span class="fl__swatch"
                 aria-hidden="true"></span><span class="m-text-4 fl__name">Stout</span><span
-                class="m-text-5 fl__meta">Beer style · illustrative</span></button></li>
+                class="m-text-5 fl__meta">Beer style</span></button></li>
         </ul>
       </div>
       <div class="fl__panel">
@@ -4183,7 +4264,7 @@
         <button class="m-btn fl__save" type="button" disabled><span class="m-btn__label">Review
             selection</span></button>
         <p class="m-text fl__status" role="status" aria-live="polite"
-          data-full="Four styles selected. Tap a circle to remove a choice."
+          data-full="Four styles selected. Select a circle to remove a choice."
           data-saved="Your local shortlist: {list}. No order has been placed."></p>
       </div>
     </section>
@@ -4445,7 +4526,7 @@
           <li class="vi__fact" data-8b-motion="hang">
             <p class="m-tag">Explore the collection</p>
             <div class="m-surface vi__body">
-              <p class="m-text">Browse the drink categories and the illustrative demo examples.</p>
+              <p class="m-text">Browse drink categories and styles.</p>
               <a class="m-link" href="#drinks">View categories</a>
             </div>
           </li>
@@ -4456,10 +4537,11 @@
             </div>
           </li>
           <li class="vi__fact" data-8b-motion="hang">
-            <p class="m-tag">Contact details</p>
+            <p class="m-tag">Get in touch</p>
             <div class="m-surface vi__body">
-              <p class="m-text">No real phone, email, address or social profiles were supplied. Add verified owner
-                details here before launch.</p>
+              <p class="m-text">Email: [Add verified email]</p>
+              <p class="m-text">Phone: [Add verified phone]</p>
+              <p class="m-text">Social: [Add verified profile links]</p>
             </div>
           </li>
         </ul>
@@ -4507,8 +4589,7 @@
     <div class="ft__base">
       <p class="m-text-5">© 2026 Good Drinks · placeholder identity · Design: <a href="https://8b.com/"
           style="color:inherit" data-8b-credit>8B</a></p>
-      <p class="m-text-5">Please enjoy responsibly. Alcohol is for adults of legal drinking age where you are. Review
-        local requirements before publishing.</p>
+      <p class="m-text-5">Please enjoy responsibly.</p>
     </div>
   </footer>
 
@@ -4695,9 +4776,11 @@
         timeline
           .fromTo(disc, { scale: 1 }, { scale: cover, duration: 1, ease: 'power2.out' }, 0)
           .fromTo(orbit, { scale: 1, rotate: 0 }, { scale: 1.7, rotate: -30, duration: .5, ease: 'power1.in' }, 0)
+          .to(orbit, { opacity: 0, duration: .08 }, .38)
           .to(title, { color: ink, duration: .16 }, .05)
           .to(base, { color: ink, duration: .1 }, .02)
           .fromTo(pint, { y: 0, rotate: 0, scale: 1 }, { y: () => -innerHeight * .35, rotate: -12, scale: .82, duration: .7, ease: 'power1.in' }, 0)
+          .to(pint, { opacity: 0, duration: .08 }, .4)
           .fromTo(chips[0], { scale: 0, rotate: -20 }, { scale: 1, rotate: 0, duration: .18, ease: 'back.out(2)' }, .42)
           .fromTo(chips[1], { scale: 0, rotate: 20 }, { scale: 1, rotate: 0, duration: .18, ease: 'back.out(2)' }, .52);
         return () => section.removeAttribute('data-flood');
@@ -4967,7 +5050,7 @@
         copy.className = 'drink-card__copy';
         const badge = document.createElement('span');
         badge.className = 'drink-badge';
-        badge.textContent = 'Demo product';
+        badge.textContent = 'Alcohol-free';
         const title = document.createElement('h3');
         title.className = 'm-text-4 drink-card__title';
         title.textContent = product.name;
@@ -5012,7 +5095,7 @@
         if (shopSort.value === 'price-desc') matching.sort((a, b) => b.unitPriceCents - a.unitPriceCents);
         shopGrid.replaceChildren(...matching.map(shopCard));
         shopGrid.scrollLeft = 0;
-        shopResults.textContent = `${matching.length} ${matching.length === 1 ? 'demo drink' : 'demo drinks'}`;
+        shopResults.textContent = `${matching.length} ${matching.length === 1 ? 'drink' : 'drinks'}`;
         shopEmpty.hidden = matching.length > 0;
         updateShopControls();
       }
