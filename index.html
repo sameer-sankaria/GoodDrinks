@@ -4746,6 +4746,17 @@
         #opening[data-flood] .op__screen--2 {
           background: transparent;
         }
+
+        #opening[data-flood] .op__screen--2 > * {
+          position: relative;
+          z-index: 2;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #opening .op__orbit {
+          display: none;
+        }
       }
     }
   </style>
@@ -4776,11 +4787,11 @@
         timeline
           .fromTo(disc, { scale: 1 }, { scale: cover, duration: 1, ease: 'power2.out' }, 0)
           .fromTo(orbit, { scale: 1, rotate: 0 }, { scale: 1.7, rotate: -30, duration: .5, ease: 'power1.in' }, 0)
-          .to(orbit, { opacity: 0, duration: .08 }, .38)
+          .to(orbit, { autoAlpha: 0, duration: .2, ease: 'power1.in' }, .3)
           .to(title, { color: ink, duration: .16 }, .05)
           .to(base, { color: ink, duration: .1 }, .02)
           .fromTo(pint, { y: 0, rotate: 0, scale: 1 }, { y: () => -innerHeight * .35, rotate: -12, scale: .82, duration: .7, ease: 'power1.in' }, 0)
-          .to(pint, { opacity: 0, duration: .08 }, .4)
+          .to(pint, { autoAlpha: 0, duration: .2, ease: 'power1.in' }, .4)
           .fromTo(chips[0], { scale: 0, rotate: -20 }, { scale: 1, rotate: 0, duration: .18, ease: 'back.out(2)' }, .42)
           .fromTo(chips[1], { scale: 0, rotate: 20 }, { scale: 1, rotate: 0, duration: .18, ease: 'back.out(2)' }, .52);
         return () => section.removeAttribute('data-flood');
