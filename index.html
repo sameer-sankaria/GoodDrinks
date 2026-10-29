@@ -897,6 +897,10 @@
         object-position: 50% 50%;
       }
 
+      #opening .op__scroll {
+        display: none;
+      }
+
       #opening .op__base {
         display: grid;
         grid-template-columns: 1fr auto 1fr;
@@ -975,6 +979,28 @@
           min-height: min(86svh, 640px);
           padding-top: 92px;
           padding-bottom: 28px;
+        }
+
+        #opening .op__scroll {
+          position: absolute;
+          right: 0;
+          bottom: 8px;
+          left: 0;
+          display: grid;
+          justify-items: center;
+          gap: 3px;
+          margin: 0;
+          color: var(--color-2);
+          font-size: 11px;
+          line-height: 1;
+          letter-spacing: .12em;
+          text-transform: uppercase;
+          pointer-events: none;
+        }
+
+        #opening .op__scroll-arrow {
+          color: var(--color-4);
+          font-size: 16px;
         }
 
         #opening .op__title .m-text-2,
@@ -3744,6 +3770,7 @@
           <span class="op__line"><span class="m-text-2">Great</span></span>
           <span class="op__line"><span class="m-text-2">stories.</span></span>
         </h1>
+        <p class="op__scroll" aria-hidden="true">Scroll <span class="op__scroll-arrow">↓</span></p>
         <div class="op__stage">
           <figure class="op__pint"><img
               src="https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=700&q=80"
@@ -4980,6 +5007,7 @@
         const title = section.querySelector('.op__title');
         const base = section.querySelector('.op__base');
         const pint = section.querySelector('.op__pint');
+        const scrollCue = section.querySelector('.op__scroll');
         const chips = section.querySelectorAll('.op__chip');
         const ink = getComputedStyle(document.documentElement).getPropertyValue('--color-1').trim();
         section.setAttribute('data-flood', '');
@@ -5002,8 +5030,14 @@
           .to(base, { color: ink, duration: .1 }, .02)
           .fromTo(pint, { y: 0, rotate: 0, scale: 1 }, { y: () => -innerHeight * .35, rotate: -12, scale: .82, duration: .7, ease: 'power1.in' }, 0)
           .to(pint, { autoAlpha: 0, duration: .2, ease: 'power1.in' }, .4)
+          .to(scrollCue, { autoAlpha: 0, duration: .1 }, 0)
           .fromTo(chips[0], { scale: 0, rotate: -20 }, { scale: 1, rotate: 0, duration: .18, ease: 'back.out(2)' }, .42)
           .fromTo(chips[1], { scale: 0, rotate: 20 }, { scale: 1, rotate: 0, duration: .18, ease: 'back.out(2)' }, .52);
+        gsap.matchMedia().add('(max-width: 760px)', () => {
+          gsap.set(base, { autoAlpha: 0, y: 24 });
+          timeline.to(base, { autoAlpha: 1, y: 0, duration: .2, ease: 'power2.out' }, .6);
+          return () => gsap.set(base, { clearProps: 'all' });
+        });
         return () => section.removeAttribute('data-flood');
       });
     }, { first: true });
