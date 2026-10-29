@@ -10,6 +10,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  </script>
   <title>Good Drinks — A drinks collection</title>
   <meta name="description"
     content="Good Drinks is an editorial guide to beer, spirits, wine, cocktails and alcohol-free drinks. Product names and prices are demo examples.">
@@ -5468,7 +5471,6 @@
       detailQuantity.addEventListener('input', () => detailQuantity.setCustomValidity(''));
       detail.addEventListener('close', () => { selectedDetailId = null; });
       renderShop();
-      syncShopCategoryFromHash();
 
       function decodeCart(serialized) {
         try {
@@ -5959,6 +5961,38 @@
         });
       });
     });
+  </script>
+  <script>
+    (() => {
+      const initialHash = window.location.hash;
+      let deliberateHash = false;
+      if (initialHash.length > 1) {
+        try {
+          deliberateHash = Boolean(document.getElementById(decodeURIComponent(initialHash.slice(1))));
+        } catch {
+          deliberateHash = false;
+        }
+        if (!deliberateHash) {
+          history.replaceState(history.state, '', `${location.pathname}${location.search}`);
+        }
+      }
+
+      const restoreTop = () => {
+        if (deliberateHash) return;
+        window.scrollTo(0, 0);
+        window.lenis?.scrollTo(0, { immediate: true });
+        window.ScrollTrigger?.refresh();
+      };
+      window.addEventListener('load', () => {
+        Promise.resolve(document.fonts?.ready).then(restoreTop);
+      }, { once: true });
+      window.addEventListener('pageshow', event => {
+        if (event.persisted) {
+          window.scrollTo(0, 0);
+          window.lenis?.scrollTo(0, { immediate: true });
+        }
+      });
+    })();
   </script>
 </body>
 
