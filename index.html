@@ -11,7 +11,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
-    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+    if (!location.hash) window.scrollTo(0, 0);
+    document.documentElement.classList.add('js');
   </script>
   <title>Good Drinks — A drinks collection</title>
   <meta name="description"
@@ -162,6 +164,7 @@
       @font-face {
         font-family: "Bricolage Grotesque Fallback";
         src: local("Arial Black"), local("Arial-Black"), local("Arial Bold");
+        font-display: swap;
         font-weight: 800 1000;
         size-adjust: 51.5%;
         ascent-override: 180.6%;
@@ -172,6 +175,7 @@
       @font-face {
         font-family: "Onest Fallback";
         src: local("Arial Bold"), local("Arial-BoldMT"), local("Helvetica Bold");
+        font-display: swap;
         font-weight: 550 799;
         size-adjust: 99.4%;
         ascent-override: 97.5%;
@@ -182,6 +186,7 @@
       @font-face {
         font-family: "Onest Fallback";
         src: local("Arial"), local("ArialMT"), local("Helvetica");
+        font-display: swap;
         font-weight: 100 549;
         size-adjust: 106.7%;
         ascent-override: 90.9%;
@@ -198,6 +203,7 @@
       html {
         -webkit-text-size-adjust: 100%;
         text-size-adjust: 100%;
+        overscroll-behavior-y: none;
       }
 
       html.lenis,
@@ -219,6 +225,7 @@
 
       body {
         margin: 0;
+        overscroll-behavior-y: none;
         background: var(--color-1);
         color: var(--color-2);
         font-family: var(--font-2);
@@ -858,6 +865,12 @@
         min-height: 100svh;
       }
 
+      #opening .op__stage {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
       #opening .op__screen--1 {
         display: grid;
         grid-template-rows: auto 1fr auto;
@@ -979,7 +992,7 @@
         }
 
         #opening .op__screen--1 {
-          min-height: min(86svh, 640px);
+          min-height: 100svh;
           padding-top: 92px;
           padding-bottom: 28px;
         }
@@ -1037,6 +1050,14 @@
 
         #opening .op__manifesto {
           font-size: min(7.6vw, 4.6svh);
+        }
+      }
+
+      @media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
+        html.js #opening:not([data-flood-ready]) .op__base {
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
         }
       }
 
@@ -4893,6 +4914,7 @@
     })();
   </script>
   <script data-8b-part="page-init">
+    if (!location.hash) window.scrollTo(0, 0);
     gsap.registerPlugin(ScrollTrigger, SplitText);
     function navOffset() {
       const nav = document.getElementById('nav');
@@ -5039,7 +5061,11 @@
         gsap.matchMedia().add('(max-width: 760px)', () => {
           gsap.set(base, { autoAlpha: 0, y: 24 });
           timeline.to(base, { autoAlpha: 1, y: 0, duration: .2, ease: 'power2.out' }, .6);
-          return () => gsap.set(base, { clearProps: 'all' });
+          section.setAttribute('data-flood-ready', '');
+          return () => {
+            section.removeAttribute('data-flood-ready');
+            gsap.set(base, { clearProps: 'all' });
+          };
         });
         return () => section.removeAttribute('data-flood');
       });
@@ -5984,7 +6010,7 @@
         window.ScrollTrigger?.refresh();
       };
       window.addEventListener('load', () => {
-        Promise.resolve(document.fonts?.ready).then(restoreTop);
+        Promise.all([document.fonts?.ready, window.motionReady]).then(restoreTop);
       }, { once: true });
       window.addEventListener('pageshow', event => {
         if (event.persisted) {
