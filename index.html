@@ -3045,6 +3045,16 @@
         border-top: 1px solid color-mix(in srgb, var(--color-2) 30%, transparent);
       }
 
+      .cart-view {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+      }
+
+      .cart-view[hidden] {
+        display: none;
+      }
+
       .cart-summary__row {
         display: flex;
         justify-content: space-between;
@@ -3056,6 +3066,146 @@
         margin-top: 16px;
         padding: 12px 14px;
         border-left: 2px solid var(--color-4);
+      }
+
+      .cart-primary {
+        width: 100%;
+        min-height: 48px;
+        margin-top: 8px;
+        border: 1px solid var(--color-2);
+        border-radius: var(--radius-2);
+        background: var(--color-2);
+        color: var(--color-1);
+        font: 700 15px/1 var(--font-2);
+        cursor: pointer;
+      }
+
+      .cart-primary:disabled {
+        opacity: .45;
+        cursor: not-allowed;
+      }
+
+      .cart-checkout,
+      .cart-confirmation {
+        padding-top: 20px;
+      }
+
+      .cart-step-title {
+        margin-bottom: 16px;
+        font-family: var(--font-1);
+        font-size: 24px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .checkout-summary {
+        margin-bottom: 20px;
+        padding: 14px;
+        border: 1px solid color-mix(in srgb, var(--color-2) 30%, transparent);
+        border-radius: var(--radius-2);
+      }
+
+      .checkout-summary h4 {
+        margin-bottom: 10px;
+      }
+
+      .checkout-summary__items {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 12px;
+        color: var(--color-8);
+        font-size: 14px;
+      }
+
+      .checkout-summary__row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-weight: 700;
+      }
+
+      .checkout-form {
+        display: grid;
+        gap: 14px;
+      }
+
+      .checkout-field {
+        display: grid;
+        gap: 6px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .checkout-field input,
+      .checkout-field textarea {
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 12px;
+        border: 1px solid color-mix(in srgb, var(--color-2) 55%, transparent);
+        border-radius: var(--radius-2);
+        background: var(--color-3);
+        color: var(--color-2);
+        font: 400 16px/1.4 var(--font-2);
+      }
+
+      .checkout-field textarea {
+        min-height: 84px;
+        resize: vertical;
+      }
+
+      .checkout-field input:focus-visible,
+      .checkout-field textarea:focus-visible {
+        outline: 2px solid var(--color-4);
+        outline-offset: 2px;
+      }
+
+      .checkout-error {
+        color: #ff9a8b;
+        font-size: 13px;
+        font-weight: 400;
+      }
+
+      .checkout-age {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 14px;
+      }
+
+      .checkout-age input {
+        width: 20px;
+        min-width: 20px;
+        height: 20px;
+        margin: 0;
+        accent-color: var(--color-4);
+      }
+
+      .checkout-actions {
+        display: grid;
+        gap: 10px;
+        margin-top: 4px;
+      }
+
+      .checkout-back {
+        min-height: 44px;
+        border: 1px solid color-mix(in srgb, var(--color-2) 55%, transparent);
+        border-radius: var(--radius-2);
+        background: transparent;
+        color: var(--color-2);
+        font: 600 14px/1 var(--font-2);
+        cursor: pointer;
+      }
+
+      .checkout-confirmation__message {
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
+
+      .checkout-reference {
+        margin-bottom: 16px;
+        font-family: var(--font-1);
+        font-size: 22px;
+        font-weight: 800;
       }
 
       .cart-storage {
@@ -3358,6 +3508,10 @@
       line-height: 1.4;
     }
 
+    .age-notice[hidden] {
+      display: none !important;
+    }
+
     .age-notice p {
       flex: 1;
     }
@@ -3437,6 +3591,7 @@
         } catch {
           // Keep the dismissed state for this page view.
         }
+        document.querySelector('.nav__brand')?.focus();
       });
     })();
   </script>
@@ -3496,13 +3651,68 @@
         <button class="cart-close" type="button" aria-label="Close cart">×</button>
       </div>
       <p class="cart-storage" id="cart-storage" role="status" aria-live="polite"></p>
-      <div class="cart-empty" id="cart-empty">Your cart is empty. Add an alcohol-free drink to start.</div>
-      <ul class="cart-items" id="cart-items" aria-label="Cart items"></ul>
-      <div class="cart-summary">
-        <div class="cart-summary__row"><span>Example subtotal</span><span id="cart-subtotal">—</span></div>
-        <p class="cart-notice">Products and prices are demo examples, not offers. This cart does not place orders or
-          process payments.</p>
+      <div class="cart-view" id="cart-view">
+        <div class="cart-empty" id="cart-empty">Your cart is empty. Add an alcohol-free drink to start.</div>
+        <ul class="cart-items" id="cart-items" aria-label="Cart items"></ul>
+        <div class="cart-summary">
+          <div class="cart-summary__row"><span>Example subtotal</span><span id="cart-subtotal">—</span></div>
+          <p class="cart-notice">Demo checkout: no payment is taken and no order is sent.</p>
+          <button class="cart-primary" id="cart-place-order" type="button" disabled>Place order</button>
+        </div>
       </div>
+      <section class="cart-checkout" id="cart-checkout" aria-labelledby="checkout-title" hidden>
+        <h3 class="cart-step-title" id="checkout-title">Checkout</h3>
+        <p class="cart-notice">Demo checkout: no payment is taken and no order is sent.</p>
+        <div class="checkout-summary" aria-labelledby="checkout-summary-title">
+          <h4 id="checkout-summary-title">Order summary</h4>
+          <ul class="checkout-summary__items" id="checkout-items"></ul>
+          <div class="checkout-summary__row"><span>Example subtotal</span><span id="checkout-subtotal">—</span></div>
+        </div>
+        <form class="checkout-form" id="checkout-form" novalidate>
+          <label class="checkout-field" for="checkout-name">
+            <span>Full name</span>
+            <input id="checkout-name" name="name" autocomplete="name" required aria-describedby="checkout-name-error">
+            <span class="checkout-error" id="checkout-name-error" aria-live="polite"></span>
+          </label>
+          <label class="checkout-field" for="checkout-phone">
+            <span>Phone</span>
+            <input id="checkout-phone" name="phone" type="tel" autocomplete="tel" required aria-describedby="checkout-phone-error">
+            <span class="checkout-error" id="checkout-phone-error" aria-live="polite"></span>
+          </label>
+          <label class="checkout-field" for="checkout-email">
+            <span>Email</span>
+            <input id="checkout-email" name="email" type="email" autocomplete="email" required aria-describedby="checkout-email-error">
+            <span class="checkout-error" id="checkout-email-error" aria-live="polite"></span>
+          </label>
+          <label class="checkout-field" for="checkout-address">
+            <span>Delivery address</span>
+            <textarea id="checkout-address" name="address" autocomplete="street-address" required aria-describedby="checkout-address-error"></textarea>
+            <span class="checkout-error" id="checkout-address-error" aria-live="polite"></span>
+          </label>
+          <label class="checkout-field" for="checkout-notes">
+            <span>Notes (optional)</span>
+            <textarea id="checkout-notes" name="notes"></textarea>
+          </label>
+          <div id="checkout-age-field" hidden>
+            <label class="checkout-age" for="checkout-age">
+              <input id="checkout-age" name="legalAge" type="checkbox" required aria-describedby="checkout-age-error">
+              <span>I confirm I am of legal drinking age</span>
+            </label>
+            <span class="checkout-error" id="checkout-age-error" aria-live="polite"></span>
+          </div>
+          <div class="checkout-actions">
+            <button class="cart-back checkout-back" id="checkout-back" type="button">Back to cart</button>
+            <button class="cart-primary" type="submit">Submit demo order</button>
+          </div>
+        </form>
+      </section>
+      <section class="cart-confirmation" id="cart-confirmation" aria-labelledby="checkout-confirmation-title" hidden>
+        <h3 class="cart-step-title" id="checkout-confirmation-title">Demo order confirmed</h3>
+        <p class="checkout-confirmation__message" id="checkout-confirmation-message" role="status" aria-live="polite"></p>
+        <p class="checkout-reference">Reference: <span id="checkout-reference"></span></p>
+        <p class="cart-notice">Demo checkout: no payment is taken and no order is sent.</p>
+        <button class="cart-primary" id="checkout-done" type="button">Close cart</button>
+      </section>
     </aside>
   </div>
   <div class="cart-toast" id="cart-toast" role="status" aria-live="polite" hidden></div>
@@ -4934,6 +5144,7 @@
   </script>
   <script data-8b-part="non-alcoholic-cart">
     (() => {
+      // Real-order endpoint intentionally not configured; Formspree: https://formspree.io/f/<id>.
       const storageKey = 'good-drinks:non-alcoholic-cart:v1';
       const maxQuantity = 99;
       const demoPricesCents = {
@@ -4973,6 +5184,18 @@
       const closeButton = drawer.querySelector('.cart-close');
       const itemsList = document.getElementById('cart-items');
       const emptyState = document.getElementById('cart-empty');
+      const placeOrderButton = document.getElementById('cart-place-order');
+      const cartView = document.getElementById('cart-view');
+      const checkoutStep = document.getElementById('cart-checkout');
+      const confirmationStep = document.getElementById('cart-confirmation');
+      const checkoutForm = document.getElementById('checkout-form');
+      const checkoutItems = document.getElementById('checkout-items');
+      const checkoutSubtotal = document.getElementById('checkout-subtotal');
+      const checkoutAgeField = document.getElementById('checkout-age-field');
+      const checkoutAge = document.getElementById('checkout-age');
+      const checkoutName = document.getElementById('checkout-name');
+      const checkoutMessage = document.getElementById('checkout-confirmation-message');
+      const checkoutReference = document.getElementById('checkout-reference');
       const countLabels = [...document.querySelectorAll('.cart-count')];
       const subtotalLabel = document.getElementById('cart-subtotal');
       const storageStatus = document.getElementById('cart-storage');
@@ -5040,6 +5263,7 @@
             image: image.currentSrc || image.src,
             imageAlt: image.alt,
             variant: null,
+            isAlcohol: false,
             unitPriceCents: demoPricesCents[id] ?? null,
             currency: demoPricesCents[id] ? 'USD' : null
           };
@@ -5257,6 +5481,94 @@
         return currency ? formatMoney(total, currency) : null;
       }
 
+      function updateCheckoutAgeRequirement() {
+        const containsAlcohol = [...cart.keys()].some(id => catalog.get(id)?.isAlcohol);
+        checkoutAgeField.hidden = !containsAlcohol;
+        checkoutAge.required = containsAlcohol;
+        if (!containsAlcohol) {
+          checkoutAge.checked = false;
+          document.getElementById('checkout-age-error').textContent = '';
+        }
+      }
+
+      function renderCheckoutSummary() {
+        checkoutItems.replaceChildren();
+        cart.forEach((quantity, id) => {
+          const product = catalog.get(id);
+          if (!product) return;
+          const item = document.createElement('li');
+          item.textContent = `${product.name} × ${quantity} — ${priceFor(product)
+            ? formatMoney(product.unitPriceCents * quantity, product.currency)
+            : 'Subtotal unavailable'}`;
+          checkoutItems.append(item);
+        });
+        checkoutSubtotal.textContent = cart.size ? `${currentSubtotal() || 'Unavailable'} · demo` : '—';
+      }
+
+      function showCartView() {
+        cartView.hidden = false;
+        checkoutStep.hidden = true;
+        confirmationStep.hidden = true;
+        drawer.setAttribute('aria-labelledby', 'cart-title');
+      }
+
+      function beginCheckout() {
+        if (!cart.size) return;
+        checkoutForm.reset();
+        checkoutForm.querySelectorAll('.checkout-error').forEach(error => { error.textContent = ''; });
+        updateCheckoutAgeRequirement();
+        renderCheckoutSummary();
+        cartView.hidden = true;
+        checkoutStep.hidden = false;
+        confirmationStep.hidden = true;
+        drawer.setAttribute('aria-labelledby', 'checkout-title');
+        checkoutName.focus();
+      }
+
+      function validationMessage(control) {
+        if (control.validity.valueMissing) {
+          return control === checkoutAge
+            ? 'Confirm you are of legal drinking age to continue.'
+            : `Enter your ${control.id === 'checkout-name' ? 'full name' : control.name}.`;
+        }
+        if (control.validity.typeMismatch && control.type === 'email') return 'Enter a valid email address.';
+        return 'Check this field and try again.';
+      }
+
+      function submitCheckout(event) {
+        event.preventDefault();
+        const valid = checkoutForm.checkValidity();
+        const invalidControls = [...checkoutForm.elements].filter(control => (
+          control.willValidate && !control.checkValidity()
+        ));
+        checkoutForm.querySelectorAll('.checkout-error').forEach(error => { error.textContent = ''; });
+        invalidControls.forEach(control => {
+          const error = document.getElementById(`${control.id}-error`);
+          if (error) error.textContent = validationMessage(control);
+        });
+        if (!valid) {
+          invalidControls[0]?.focus();
+          return;
+        }
+        if (!cart.size) {
+          showCartView();
+          placeOrderButton.focus();
+          return;
+        }
+
+        const reference = `GD-${Math.floor(1000 + Math.random() * 9000)}`;
+        checkoutMessage.textContent = `Thanks, ${checkoutName.value.trim()}. Your demo order is confirmed. Nothing was charged or sent.`;
+        checkoutReference.textContent = reference;
+        cart.clear();
+        saveCart();
+        render();
+        cartView.hidden = true;
+        checkoutStep.hidden = true;
+        confirmationStep.hidden = false;
+        drawer.setAttribute('aria-labelledby', 'checkout-confirmation-title');
+        document.getElementById('checkout-done').focus();
+      }
+
       function render() {
         const itemCount = [...cart.values()].reduce((sum, quantity) => sum + quantity, 0);
         countLabels.forEach(label => { label.textContent = String(itemCount); });
@@ -5264,6 +5576,7 @@
           button.setAttribute('aria-label', `Open cart, ${itemCount} ${itemCount === 1 ? 'item' : 'items'}`);
         });
         emptyState.hidden = cart.size > 0;
+        placeOrderButton.disabled = cart.size === 0;
         itemsList.replaceChildren();
 
         cart.forEach((quantity, id) => {
@@ -5333,6 +5646,8 @@
 
         subtotalLabel.textContent = cart.size ? `${currentSubtotal() || 'Unavailable'} · demo` : '—';
         storageStatus.textContent = storageMessage;
+        updateCheckoutAgeRequirement();
+        renderCheckoutSummary();
       }
 
       function announce(message) {
@@ -5357,7 +5672,6 @@
         layer.hidden = true;
         document.body.style.overflow = previousBodyOverflow;
         openButtons.forEach(button => button.setAttribute('aria-expanded', 'false'));
-        layer.removeEventListener('keydown', onDialogKeydown);
         if (previousFocus instanceof HTMLElement) previousFocus.focus();
       }
 
@@ -5368,7 +5682,9 @@
           return;
         }
         if (event.key !== 'Tab') return;
-        const focusable = [...drawer.querySelectorAll('button:not(:disabled), [href], [tabindex]:not([tabindex="-1"])')];
+        const focusable = [...drawer.querySelectorAll(
+          'button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), [href], [tabindex]:not([tabindex="-1"])'
+        )].filter(element => !element.closest('[hidden]'));
         if (!focusable.length) {
           event.preventDefault();
           drawer.focus();
@@ -5413,6 +5729,23 @@
 
       openButtons.forEach(button => button.addEventListener('click', openCart));
       closeButton.addEventListener('click', closeCart);
+      placeOrderButton.addEventListener('click', beginCheckout);
+      document.getElementById('checkout-back').addEventListener('click', () => {
+        showCartView();
+        placeOrderButton.focus();
+      });
+      checkoutForm.addEventListener('submit', submitCheckout);
+      checkoutForm.addEventListener('input', event => {
+        const control = event.target;
+        const error = document.getElementById(`${control.id}-error`);
+        if (error && control.checkValidity()) error.textContent = '';
+      });
+      checkoutForm.addEventListener('change', event => {
+        const control = event.target;
+        const error = document.getElementById(`${control.id}-error`);
+        if (error && control.checkValidity()) error.textContent = '';
+      });
+      document.getElementById('checkout-done').addEventListener('click', closeCart);
       layer.querySelector('.cart-backdrop').addEventListener('click', closeCart);
       layer.addEventListener('keydown', onDialogKeydown);
       itemsList.addEventListener('click', event => {
