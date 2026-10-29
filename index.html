@@ -11,7 +11,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
-    try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+    try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) { }
     if (!location.hash) window.scrollTo(0, 0);
     document.documentElement.classList.add('js');
   </script>
@@ -836,7 +836,7 @@
         border-radius: 50%;
         overflow: hidden;
         background: var(--color-3);
-        offset-path: path("M 400 0 A 400 128 0 1 1 -400 0 A 400 128 0 1 1 400 0");
+        offset-path: path("M 400 0 A 400 90 0 1 1 -400 0 A 400 90 0 1 1 400 0");
         offset-rotate: 0deg;
         offset-distance: var(--op-at);
       }
@@ -866,14 +866,15 @@
       }
 
       #opening .op__stage {
-        position: absolute;
-        inset: 0;
+        position: relative;
+        min-height: 40svh;
         pointer-events: none;
       }
 
       #opening .op__screen--1 {
         display: grid;
-        grid-template-rows: auto 1fr auto;
+        grid-template-rows: auto clamp(320px, 40svh, 420px) auto;
+        align-content: space-between;
         padding: calc(84px + 2svh) var(--space-1) 4svh;
         text-align: center;
       }
@@ -900,7 +901,7 @@
       #opening .op__pint {
         position: absolute;
         left: calc(50% - var(--op-pint) / 2);
-        top: calc(var(--op-cy) * 100svh - var(--op-pint));
+        top: calc(50% - var(--op-pint) / 2);
         width: var(--op-pint);
         aspect-ratio: 1 / 2;
       }
@@ -993,8 +994,13 @@
 
         #opening .op__screen--1 {
           min-height: 100svh;
+          grid-template-rows: auto clamp(280px, 38svh, 360px) auto;
           padding-top: 92px;
           padding-bottom: 28px;
+        }
+
+        #opening .op__stage {
+          min-height: 38svh;
         }
 
         #opening .op__scroll {
@@ -1026,7 +1032,13 @@
 
         #opening .op__base {
           grid-template-columns: 1fr;
-          gap: 14px;
+          grid-template-rows: auto auto;
+          gap: 16px;
+        }
+
+        #opening .op__actions {
+          grid-row: 1;
+          grid-column: 1;
         }
 
         #opening .op__label--l {
@@ -1034,12 +1046,14 @@
         }
 
         #opening .op__label--r {
+          grid-row: 2;
+          grid-column: 1;
           white-space: normal;
         }
 
         #opening .op__actions {
           flex-direction: column;
-          gap: 14px;
+          gap: 16px;
           padding: 0;
         }
 
@@ -1063,18 +1077,16 @@
 
       @media (min-width: 761px) and (max-width: 900px) {
         #opening .op__base {
-          grid-template-columns: auto minmax(0, 1fr);
-          gap: 12px;
+          gap: 10px;
         }
 
-        #opening .op__label--l {
-          display: none;
+        #opening .op__actions {
+          gap: clamp(8px, 1.3vw, 16px);
         }
 
-        #opening .op__label--r {
-          white-space: normal;
-          justify-content: flex-end;
-          text-align: right;
+        #opening .op__label {
+          gap: 6px;
+          font-size: clamp(11px, 1.2vw, 14px);
         }
       }
 
@@ -5054,13 +5066,13 @@
           .to(title, { color: ink, duration: .16 }, .05)
           .to(base, { color: ink, duration: .1 }, .02)
           .fromTo(pint, { y: 0, rotate: 0, scale: 1 }, { y: () => -innerHeight * .35, rotate: -12, scale: .82, duration: .7, ease: 'power1.in' }, 0)
-          .to(pint, { autoAlpha: 0, duration: .2, ease: 'power1.in' }, .4)
+          .to(pint, { autoAlpha: 0, duration: .2, ease: 'power1.in' }, .3)
           .to(scrollCue, { autoAlpha: 0, duration: .1 }, 0)
           .fromTo(chips[0], { scale: 0, rotate: -20 }, { scale: 1, rotate: 0, duration: .18, ease: 'back.out(2)' }, .42)
           .fromTo(chips[1], { scale: 0, rotate: 20 }, { scale: 1, rotate: 0, duration: .18, ease: 'back.out(2)' }, .52);
         gsap.matchMedia().add('(max-width: 760px)', () => {
           gsap.set(base, { autoAlpha: 0, y: 24 });
-          timeline.to(base, { autoAlpha: 1, y: 0, duration: .2, ease: 'power2.out' }, .6);
+          timeline.fromTo(base, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: .2, ease: 'power2.out' }, .55);
           section.setAttribute('data-flood-ready', '');
           return () => {
             section.removeAttribute('data-flood-ready');
@@ -6004,9 +6016,10 @@
       }
 
       const restoreTop = () => {
-        if (deliberateHash) return;
-        window.scrollTo(0, 0);
-        window.lenis?.scrollTo(0, { immediate: true });
+        if (!deliberateHash) {
+          window.scrollTo(0, 0);
+          window.lenis?.scrollTo(0, { immediate: true });
+        }
         window.ScrollTrigger?.refresh();
       };
       window.addEventListener('load', () => {
@@ -6016,6 +6029,7 @@
         if (event.persisted) {
           window.scrollTo(0, 0);
           window.lenis?.scrollTo(0, { immediate: true });
+          window.ScrollTrigger?.refresh();
         }
       });
     })();
