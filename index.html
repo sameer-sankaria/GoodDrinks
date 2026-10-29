@@ -866,7 +866,7 @@
       }
 
       #opening .op__stage {
-        position: relative;
+        position: static;
         min-height: 40svh;
         pointer-events: none;
       }
@@ -901,7 +901,7 @@
       #opening .op__pint {
         position: absolute;
         left: calc(50% - var(--op-pint) / 2);
-        top: calc(50% - var(--op-pint) / 2);
+        top: calc(var(--op-cy) * 100svh - var(--op-pint));
         width: var(--op-pint);
         aspect-ratio: 1 / 2;
       }
