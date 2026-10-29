@@ -836,7 +836,7 @@
         border-radius: 50%;
         overflow: hidden;
         background: var(--color-3);
-        offset-path: path("M 400 0 A 400 90 0 1 1 -400 0 A 400 90 0 1 1 400 0");
+        offset-path: path("M 0 -230 A 230 230 0 1 1 0 230 A 230 230 0 1 1 0 -230");
         offset-rotate: 0deg;
         offset-distance: var(--op-at);
       }
@@ -848,7 +848,7 @@
       }
 
       #opening .op__sat:nth-child(1) {
-        --op-at: 58%;
+        --op-at: 8%;
       }
 
       #opening .op__sat:nth-child(2) {
@@ -989,7 +989,7 @@
         }
 
         #opening .op__sat {
-          offset-path: path("M 168 0 A 168 70 0 1 1 -168 0 A 168 70 0 1 1 168 0");
+          offset-path: path("M 0 -180 A 180 180 0 1 1 0 180 A 180 180 0 1 1 0 -180");
         }
 
         #opening .op__screen--1 {
@@ -5048,6 +5048,22 @@
         const chips = section.querySelectorAll('.op__chip');
         const ink = getComputedStyle(document.documentElement).getPropertyValue('--color-1').trim();
         section.setAttribute('data-flood', '');
+        const satellites = [...orbit.querySelectorAll('.op__sat')];
+        let resizeTimer;
+        const updateOrbitPaths = () => {
+          const discRadius = disc.getBoundingClientRect().width / 2;
+          satellites.forEach(satellite => {
+            const radius = discRadius + satellite.getBoundingClientRect().width / 2 + 10;
+            satellite.style.offsetPath = `path("M 0 ${-radius} A ${radius} ${radius} 0 1 1 0 ${radius} A ${radius} ${radius} 0 1 1 0 ${-radius}")`;
+          });
+        };
+        const onResize = () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(updateOrbitPaths, 100);
+        };
+        updateOrbitPaths();
+        window.addEventListener('load', updateOrbitPaths, { once: true });
+        window.addEventListener('resize', onResize);
         const cover = () => {
           const box = backdrop.getBoundingClientRect();
           const d = disc.getBoundingClientRect();
@@ -5079,7 +5095,13 @@
             gsap.set(base, { clearProps: 'all' });
           };
         });
-        return () => section.removeAttribute('data-flood');
+        return () => {
+          section.removeAttribute('data-flood');
+          window.removeEventListener('load', updateOrbitPaths);
+          window.removeEventListener('resize', onResize);
+          clearTimeout(resizeTimer);
+          satellites.forEach(satellite => satellite.style.removeProperty('offset-path'));
+        };
       });
     }, { first: true });
   </script>
